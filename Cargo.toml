@@ -1,6 +1,6 @@
 [package]
 name = "enxame-tracker"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 rust-version = "1.91.0"
 description = "enxame-tracker — a fast Rust BitTorrent tracker server (HTTP announce + scrape, compact peers, in-memory swarm registry). The server half of the pleme-io ENXAME suite; a caixa Servico for HELM-NATIVE deploy."
