@@ -1,0 +1,32 @@
+[package]
+name = "enxame-tracker"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.91.0"
+description = "enxame-tracker — a fast Rust BitTorrent tracker server (HTTP announce + scrape, compact peers, in-memory swarm registry). The server half of the pleme-io ENXAME suite; a caixa Servico for HELM-NATIVE deploy."
+homepage = "https://github.com/pleme-io/enxame-tracker"
+repository = "https://github.com/pleme-io/enxame-tracker"
+readme = "README.md"
+license = "MIT"
+keywords = ["bittorrent", "tracker", "server", "torrent", "pleme-io"]
+publish = true
+
+[[bin]]
+name = "enxame-tracker"
+path = "src/main.rs"
+
+[lib]
+name = "enxame_tracker"
+path = "src/lib.rs"
+
+[lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+
+[dependencies]
+bencode = { path = "../bencode", version = "0.1" }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "sync", "time"] }
+anyhow = "1"
+
+[dev-dependencies]
