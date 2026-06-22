@@ -13,8 +13,8 @@
 
 #![forbid(unsafe_code)]
 
-use std::collections::HashMap;
 use std::collections::BTreeMap;
+use std::collections::HashMap;
 use std::net::SocketAddr;
 use std::time::{Duration, Instant};
 
@@ -104,7 +104,10 @@ impl AnnounceResponse {
     #[must_use]
     pub fn failure(reason: &str) -> Vec<u8> {
         let mut dict = BTreeMap::new();
-        dict.insert(b"failure reason".to_vec(), Bencode::Bytes(reason.as_bytes().to_vec()));
+        dict.insert(
+            b"failure reason".to_vec(),
+            Bencode::Bytes(reason.as_bytes().to_vec()),
+        );
         Bencode::Dict(dict).to_bytes()
     }
 }
@@ -139,7 +142,11 @@ impl Registry {
         } else {
             swarm.insert(
                 req.peer_id,
-                PeerEntry { addr: req.addr, is_seeder: req.left == 0, last_seen: now },
+                PeerEntry {
+                    addr: req.addr,
+                    is_seeder: req.left == 0,
+                    last_seen: now,
+                },
             );
         }
 
@@ -159,7 +166,12 @@ impl Registry {
             }
         }
 
-        AnnounceResponse { interval: ANNOUNCE_INTERVAL, complete, incomplete, peers }
+        AnnounceResponse {
+            interval: ANNOUNCE_INTERVAL,
+            complete,
+            incomplete,
+            peers,
+        }
     }
 
     /// Number of swarms currently tracked.
@@ -239,7 +251,10 @@ mod tests {
         };
         let bytes = resp.to_bencode();
         let parsed = bencode::parse(&bytes).unwrap();
-        assert_eq!(parsed.get(b"interval").and_then(Bencode::as_int), Some(1800));
+        assert_eq!(
+            parsed.get(b"interval").and_then(Bencode::as_int),
+            Some(1800)
+        );
         let peers = parsed.get(b"peers").and_then(Bencode::as_bytes).unwrap();
         assert_eq!(peers, &[1, 2, 3, 4, 0x1a, 0xe1]); // 6881 = 0x1ae1
     }

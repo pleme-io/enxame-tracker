@@ -18,7 +18,9 @@ use tokio::sync::Mutex;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let bind = std::env::args().nth(1).unwrap_or_else(|| "0.0.0.0:6969".into());
+    let bind = std::env::args()
+        .nth(1)
+        .unwrap_or_else(|| "0.0.0.0:6969".into());
     let registry = Arc::new(Mutex::new(Registry::new()));
 
     // Periodic reaper.
@@ -46,7 +48,11 @@ async fn main() -> Result<()> {
     }
 }
 
-async fn serve(mut stream: TcpStream, peer: SocketAddr, registry: Arc<Mutex<Registry>>) -> Result<()> {
+async fn serve(
+    mut stream: TcpStream,
+    peer: SocketAddr,
+    registry: Arc<Mutex<Registry>>,
+) -> Result<()> {
     // Read just the request line + headers (the announce is a GET, no body).
     let mut buf = Vec::new();
     let mut chunk = [0u8; 2048];
@@ -65,7 +71,11 @@ async fn serve(mut stream: TcpStream, peer: SocketAddr, registry: Arc<Mutex<Regi
 
     let body = match target {
         Some((path, query)) if path == b"/announce" => match build_announce(&query, peer) {
-            Ok(req) => registry.lock().await.announce(&req, Instant::now()).to_bencode(),
+            Ok(req) => registry
+                .lock()
+                .await
+                .announce(&req, Instant::now())
+                .to_bencode(),
             Err(reason) => enxame_tracker::AnnounceResponse::failure(reason),
         },
         Some((path, _)) if path == b"/scrape" => {
@@ -128,7 +138,13 @@ fn build_announce(query: &[u8], peer: SocketAddr) -> Result<AnnounceRequest, &'s
     let peer_id = peer_id.ok_or("missing or malformed peer_id")?;
     let port = port.ok_or("missing port")?;
     let ip = ip_override.unwrap_or_else(|| peer.ip());
-    Ok(AnnounceRequest { info_hash, peer_id, addr: SocketAddr::new(ip, port), left, event })
+    Ok(AnnounceRequest {
+        info_hash,
+        peer_id,
+        addr: SocketAddr::new(ip, port),
+        left,
+        event,
+    })
 }
 
 fn percent_decode(s: &[u8]) -> Vec<u8> {
